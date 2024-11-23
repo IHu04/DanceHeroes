@@ -1,0 +1,33 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MediaPipe Holistic with Three.js VRM Model</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #canvas { position: absolute; top: 0; left: 0; }
+    #video { display: none; }
+  </style>
+</head>
+<body>
+  <video id="video" autoplay playsinline></video>
+  <canvas id="canvas"></canvas>
+
+  <!-- Include Three.js -->
+  <script src="https://unpkg.com/three@0.150.1/build/three.js"></script>
+  <!-- Include GLTFLoader -->
+  <script src="https://unpkg.com/three@0.150.1/examples/js/loaders/GLTFLoader.js"></script>
+  <!-- Include the Built Version of three-vrm -->
+  <script src="https://unpkg.com/three-vrm@1.0.9/dist/three-vrm.js"></script>
+  <!-- Include MediaPipe Holistic -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5/holistic.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://unpkg.com/kalidokit@1.1.0/dist/kalidokit.umd.js"></script>
+
+  <!-- Your JavaScript Code -->
+  <script type="module" src="main.js"></script>
+</body>
+</html>
+
