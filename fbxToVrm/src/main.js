@@ -17,16 +17,27 @@ const boneMapping = {
   'm_avg_Spine3': 'J_Bip_C_UpperChest', // If available
   'm_avg_Neck': 'J_Bip_C_Neck',
   'm_avg_Head': 'J_Bip_C_Head',
+  // // Left Leg
+  // 'm_avg_L_Hip': 'J_Bip_L_UpperLeg',
+  // 'm_avg_L_Knee': 'J_Bip_L_LowerLeg',
+  // 'm_avg_L_Ankle': 'J_Bip_L_Foot',
+  // 'm_avg_L_Foot': 'J_Bip_L_ToeBase',
+  // // Right Leg
+  // 'm_avg_R_Hip': 'J_Bip_R_UpperLeg',
+  // 'm_avg_R_Knee': 'J_Bip_R_LowerLeg',
+  // 'm_avg_R_Ankle': 'J_Bip_R_Foot',
+  // 'm_avg_R_Foot': 'J_Bip_R_ToeBase',
+
   // Left Leg
-  'm_avg_L_Hip': 'J_Bip_L_UpperLeg',
-  'm_avg_L_Knee': 'J_Bip_L_LowerLeg',
-  'm_avg_L_Ankle': 'J_Bip_L_Foot',
-  'm_avg_L_Foot': 'J_Bip_L_ToeBase',
+  'm_avg_L_Hip': 'J_Bip_R_UpperLeg',
+  'm_avg_L_Knee': 'J_Bip_R_LowerLeg',
+  'm_avg_L_Ankle': 'J_Bip_R_Foot',
+  'm_avg_L_Foot': 'J_Bip_R_ToeBase',
   // Right Leg
-  'm_avg_R_Hip': 'J_Bip_R_UpperLeg',
-  'm_avg_R_Knee': 'J_Bip_R_LowerLeg',
-  'm_avg_R_Ankle': 'J_Bip_R_Foot',
-  'm_avg_R_Foot': 'J_Bip_R_ToeBase',
+  'm_avg_R_Hip': 'J_Bip_L_UpperLeg',
+  'm_avg_R_Knee': 'J_Bip_L_LowerLeg',
+  'm_avg_R_Ankle': 'J_Bip_L_Foot',
+  'm_avg_R_Foot': 'J_Bip_L_ToeBase',
   // Left Arm
   'm_avg_L_Collar': 'J_Bip_L_Shoulder',
   'm_avg_L_Shoulder': 'J_Bip_L_UpperArm',
@@ -44,6 +55,35 @@ const boneMapping = {
   // 'm_avg_L_Hand_end': '',
   // 'm_avg_R_Hand_end': '',
 };
+
+function adjustRotationValues(boneName, values) {
+  const adjustedValues = values.slice(); // Clone the array
+
+  // Bones that need rotation inversion
+  const invertBones = [
+    'J_Bip_L_LowerLeg', // Left Knee
+    'J_Bip_R_LowerLeg', // Right Knee
+    'J_Bip_L_LowerArm', // Left Elbow
+    'J_Bip_R_LowerArm',  // Right Elbow
+    'J_Bip_L_Shoulder', // Left Shoulder
+    'J_Bip_R_Shoulder',  // Right shoulder
+    'J_Bip_C_Neck', // Neck
+    'J_Bip_C_Head', // Head
+    'J_Bip_L_UpperLeg', // left upper leg
+    'J_Bip_R_UpperLeg', // right upper leg
+  ];
+
+  if (invertBones.includes(boneName)) {
+    for (let i = 0; i < values.length; i += 4) {
+      // Invert the necessary axis (e.g., X-axis)
+      adjustedValues[i] = -adjustedValues[i]; // Invert X component
+      // If other axes need inversion, adjust accordingly
+    }
+  }
+
+  return adjustedValues;
+}
+
 
 function init() {
   scene = new THREE.Scene();
@@ -113,7 +153,7 @@ function applyAnimation(vrm, fbxAnimation) {
   mixer = new THREE.AnimationMixer(vrm.scene);
 
   const vrmTracks = [];
-  const euler = new THREE.Euler(0, 0, 0, 'XYZ');
+  const euler = new THREE.Euler(0, 0, 0, 'XYZ'); // Adjust rotation order if necessary
   const quaternion = new THREE.Quaternion();
 
   for (let i = 0; i < fbxAnimation.tracks.length; i++) {
@@ -129,10 +169,16 @@ function applyAnimation(vrm, fbxAnimation) {
     let vrmTrack;
 
     if (propertyName === 'quaternion') {
+      // Invert rotations for knees and elbows
+      const adjustedValues = adjustRotationValues(
+        vrmBoneName,
+        fbxTrack.values
+      );
+
       vrmTrack = new THREE.QuaternionKeyframeTrack(
         `${vrmBoneNode.name}.quaternion`,
         fbxTrack.times,
-        fbxTrack.values
+        adjustedValues
       );
     } else if (propertyName === 'rotation') {
       const quaternionValues = [];
@@ -143,7 +189,12 @@ function applyAnimation(vrm, fbxAnimation) {
           fbxTrack.values[j + 1],
           fbxTrack.values[j + 2]
         );
+
+        // Convert Euler to Quaternion
         quaternion.setFromEuler(euler);
+
+        // Adjust rotations for knees and elbows
+        adjustQuaternion(vrmBoneName, quaternion);
 
         quaternionValues.push(
           quaternion.x,
@@ -159,13 +210,14 @@ function applyAnimation(vrm, fbxAnimation) {
         quaternionValues
       );
     } else if (propertyName === 'position') {
+      // Adjust positions if necessary
       vrmTrack = new THREE.VectorKeyframeTrack(
         `${vrmBoneNode.name}.position`,
         fbxTrack.times,
         fbxTrack.values
       );
     } else {
-      continue;
+      continue; // Skip unsupported properties
     }
 
     vrmTracks.push(vrmTrack);
