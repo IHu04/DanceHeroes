@@ -2,27 +2,19 @@
 
 **Follow the dancer. Match the moves. Become a Dance Hero.**
 
-A browser dance game with 3D avatars, webcam motion capture, and pose-based scoring. Built by **Jason Shao, Isaac Hu, and Colin Song** for **McGill CodeJam 14**, where it won **Committee's Choice**.
+A browser dance game with 3D avatars, webcam motion capture, and pose-based scoring. Built by **Jason Shao, Isaac Hu, and Colin Song**.
+
+**🏆 Committee's Choice Winner — McGill CodeJam 14** · [Award and project submission](https://devpost.com/software/dance-heroes)
 
 [Devpost project](https://devpost.com/software/dance-heroes) · [Download source ZIP](https://github.com/IHu04/DanceHeroes/archive/refs/heads/main.zip) · [Run locally](#run-locally)
 
 ## Gameplay preview
 
-![Bundled dance playback in the restored app](docs/gameplay.png)
+![Bundled dance playback](docs/gameplay.png)
 
-The restored app playing the bundled routine in **Watch demo** mode. Start a camera game to control the left avatar.
+The app playing the bundled routine in **Watch demo** mode. Start a camera game to control the left avatar.
 
-## The original project
-
-![Dance Heroes title screen from Devpost](https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/003/154/340/datas/original.png)
-
-| Music selection | Avatar selection |
-| --- | --- |
-| ![Music upload screen from Devpost](https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/003/154/347/datas/original.png) | ![Model selection screen from Devpost](https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/003/154/341/datas/original.png) |
-
-The screenshots above come from our [Devpost submission](https://devpost.com/software/dance-heroes). The hackathon project explored generating choreography from music with EDGE, then comparing a player's movements with the generated dancer.
-
-## What you can run now
+## Current status
 
 - **Bundled demo:** play the included dance animation and soundtrack without downloading AI model weights.
 - **Watch mode:** preview the dancer without enabling a webcam.
@@ -30,7 +22,7 @@ The screenshots above come from our [Devpost submission](https://devpost.com/sof
 - **Results:** end the game to see your score and play again.
 - **Optional music generation:** connect a separately installed EDGE-to-FBX adapter to enable WAV uploads.
 
-The original EDGE setup and `create_dance.sh` were not committed. Custom music generation therefore requires the optional adapter described below. The bundled demo works independently of that pipeline.
+The bundled demo runs locally. Custom music generation requires an external EDGE setup and the optional adapter described below.
 
 ## Run locally
 
@@ -50,7 +42,7 @@ git clone https://github.com/IHu04/DanceHeroes.git
 cd DanceHeroes
 ```
 
-If using the ZIP, open a terminal in the extracted folder containing `package.json`. The ZIP includes the runnable app and skips the historical `experiments/` and extra `samples/`; cloning includes those folders.
+If using the ZIP, open a terminal in the extracted folder containing `package.json`. The ZIP includes the runnable app and skips the `experiments/` and extra `samples/`; cloning includes those folders.
 
 ### Install and launch
 
@@ -98,11 +90,9 @@ DanceHeroes/
 │   └── tests/            # API and scoring regression tests
 ├── scripts/              # Cross-platform setup and startup commands
 ├── docs/                 # Gameplay preview
-├── samples/              # Original sample WAV audio
-└── experiments/          # Preserved hackathon prototypes; not app entrypoints
+├── samples/              # Sample WAV audio
+└── experiments/          # Experimental prototypes; not app entrypoints
 ```
-
-The duplicate frontend and broken submodule were removed. Distinct experimental work is preserved under `experiments/`; the Git history retains the original layout.
 
 ## Stack
 
@@ -112,11 +102,11 @@ The duplicate frontend and broken submodule were removed. Distinct experimental 
 | 3D rendering | Three.js, `@pixiv/three-vrm`, FBXLoader |
 | Motion capture | MediaPipe Holistic, Kalidokit |
 | Local API | Python, Flask |
-| Original generation research | EDGE, Blender, SMPL choreography |
+| Optional choreography generation | External EDGE setup and an EDGE-to-FBX adapter |
 
 ## Optional: generate choreography for your own music
 
-Install [EDGE](https://github.com/Stanford-TML/EDGE) and its required checkpoints/assets separately. The original music-to-FBX conversion pipeline is not included in this repository.
+Install [EDGE](https://github.com/Stanford-TML/EDGE) and its required checkpoints/assets separately. Music-to-FBX conversion requires a working external adapter.
 
 To connect your working pipeline, set `DANCE_GENERATOR_SCRIPT` to the absolute path of a Bash adapter before running `npm start`. The backend invokes it with two arguments:
 
@@ -162,8 +152,8 @@ On Windows, use `.venv\Scripts\python.exe backend\app.py` for the backend. The p
 - **Scoring unavailable:** confirm the backend started; start a new game after a backend restart.
 - **Custom uploads disabled:** configure a working generation adapter, or play the bundled demo.
 
-## Project status and credits
+## Limitations and credits
 
-This is a restored hackathon prototype. Scoring is a heuristic comparison of poses, not a calibrated dance judge. Sessions are local and kept in memory. The bundled soundtrack and choreography are demonstration assets; arbitrary music requires the external generation pipeline.
+Dance Heroes is a hackathon prototype. Scoring is a heuristic comparison of poses, not a calibrated dance judge. Sessions are local and kept in memory. The bundled soundtrack and choreography are demonstration assets; arbitrary music requires the external generation pipeline.
 
-Our original work was inspired by [SysMocap](https://github.com/xianfei/SysMocap) and [EDGE](https://github.com/Stanford-TML/EDGE). Avatar and dependency assets retain their respective authors' terms. See [asset credits](frontend/public/models/CREDITS.md).
+Dance Heroes is inspired by [SysMocap](https://github.com/xianfei/SysMocap) and [EDGE](https://github.com/Stanford-TML/EDGE). Avatar and dependency assets retain their respective authors' terms. See [asset credits](frontend/public/models/CREDITS.md).
