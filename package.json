@@ -1,0 +1,20 @@
+{
+  "name": "dance-heroes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend"
+  ],
+  "engines": {
+    "node": "^22.13.0 || >=24"
+  },
+  "scripts": {
+    "start": "node scripts/dev.mjs",
+    "dev": "node scripts/dev.mjs",
+    "setup:backend": "node scripts/setup-backend.mjs",
+    "build": "npm run build --workspace frontend",
+    "lint": "npm run lint --workspace frontend",
+    "test": "node scripts/test.mjs"
+  }
+}
